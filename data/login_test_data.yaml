@@ -1,0 +1,57 @@
+# 首页接口测试
+homepage_cases:
+  - test_id: start_001
+    feature: 用户认证
+    story: 获取csrf_token
+    title: 访问首页获取csrf_token
+    request:
+      method: get
+      url: /start
+    extract:
+      csrf_token: ''
+    validate:
+      status_code: 200
+      cookies:
+        csrf_token: null
+
+# 登录接口测试
+login_cases:
+  - test_id: login_001
+    feature: 用户认证
+    story: 用户登录
+    title: 使用正确信息登录
+    description: 使用正确的账户名密码和有效token可以成功登录
+    request:
+      method: post
+      url: /login
+      headers:
+        Accept: application/json,text/javascript,/;q=0.01
+        X-Requested-With: XMLHttpRequest
+      json:
+        username: 13924248888
+        password: zsbgw123
+        csrf_token: ''
+        backurl: 'https://m1.apifoxmock.com/m1/7035626-6755555-default/phpwind/start'
+    validate:
+      status_code: 200
+      message: 登录成功
+
+  - test_id: login_002
+    feature: 用户认证
+    story: 用户登录
+    title: 使用正确账户和错误密码登录
+    description: 使用正确的账户名和错误密码和有效token登陆失败
+    request:
+      method: post
+      url: /login
+      headers:
+        Accept: application/json,text/javascript,/;q=0.01
+        X-Requested-With: XMLHttpRequest
+      json:
+        username: 13924248888
+        password: zsbgw321
+        csrf_token: ''
+        backurl: 'https://m1.apifoxmock.com/m1/7035626-6755555-default/phpwind/start'
+    validate:
+      status_code: 401
+      message: 密码错误
