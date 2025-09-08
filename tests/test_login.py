@@ -1,36 +1,42 @@
-# import jsonpath
 import pytest
 
-from common.yaml_utils import load_yaml_test_cases
+from common.yaml_utils import load_yaml_test_cases, replace_variables
+
+# 加载测试数据
+test_data = load_yaml_test_cases('login_test_data.yaml')
 
 
 class TestLogin:
-    """测试登陆相关的api"""
+    """测试登陆相关的 api"""
 
-    # 加载测试数据
-    data = load_yaml_test_cases('login_test_data.yaml')
+    @pytest.mark.parametrize("case_info", test_data['homepage_cases'])
+    def test_homepage(self, api_client, case_info):
+        """测试首页接口"""
 
-    def test_homepage(self, api_client):
-        """测试首页接口，并提取 csrf_token"""
-
-        hp_cases = TestLogin.data['homepage_cases'][0]  # 首页接口的测试用例
         # 发送请求
-        resp = api_client.request(**hp_cases['request'])
-
-        # 提取 csrf_token
-        if 'extract' in hp_cases:
-            api_client.extract_csrf_token(resp)
+        resp = api_client.request(**case_info['request'])
 
         # 断言响应结果
-        assert resp.status_code == hp_cases['validate']['status_code']
-        assert 'csrf_token' in resp.cookies
+        assert resp.status_code == case_info['validate']['status_code']
+        assert case_info['validate']['check_cookie'] in resp.cookies
 
-    @pytest.mark.parametrize('login_cases', data['login_cases'])
-    def test_login(self, api_client, login_cases):
+    @pytest.mark.parametrize("case_info", test_data['login_cases'])
+    def test_login(self, api_client, csrf_token, case_info):
         """测试登录接口"""
-        login_cases['request']['json']['csrf_token'] = api_client.variables['csrf_token']
-        resp = api_client.request(**login_cases['request'])
 
-        # 断言
-        assert resp.status_code == login_cases['validate']['status_code']
-        assert resp.json()['message'] == login_cases['validate']['message']
+        # 1. 定义变量字典，保存实际替换的变量名和值
+        variables = {
+            'csrf_token': csrf_token
+        }
+
+        # 2. 动态替换请求数据中的占位符
+        request_data = replace_variables(case_info['request'], variables)
+
+        # 3. 发送请求
+        resp = api_client.request(**request_data)
+
+        # 4. 断言
+        assert resp.status_code == case_info['validate']['status_code']
+        if 'check_json' in case_info['validate']:
+            for key, expected_value in case_info['validate']['check_json']:
+                assert resp.json()[key] == expected_value

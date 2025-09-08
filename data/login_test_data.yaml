@@ -8,11 +8,12 @@ homepage_cases:
       method: get
       url: /start
     extract:
-      csrf_token: ''
+      # 提取规则，表示从 cookies中提取 csrf_token
+      csrf_token: 'cookies.csrf_token'
     validate:
       status_code: 200
-      cookies:
-        csrf_token: null
+      check_cookie: 'csrf_token'
+
 
 # 登录接口测试
 login_cases:
@@ -30,11 +31,12 @@ login_cases:
       json:
         username: 13924248888
         password: zsbgw123
-        csrf_token: ''
+        csrf_token: '${csrf_token}'
         backurl: 'https://m1.apifoxmock.com/m1/7035626-6755555-default/phpwind/start'
     validate:
       status_code: 200
-      message: 登录成功
+      check_json:
+        message: 登录成功
 
   - test_id: login_002
     feature: 用户认证
@@ -50,8 +52,9 @@ login_cases:
       json:
         username: 13924248888
         password: zsbgw321
-        csrf_token: ''
+        csrf_token: '${csrf_token}'
         backurl: 'https://m1.apifoxmock.com/m1/7035626-6755555-default/phpwind/start'
     validate:
       status_code: 401
-      message: 密码错误
+      check_json:
+        message: 密码错误
