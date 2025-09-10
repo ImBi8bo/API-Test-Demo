@@ -38,5 +38,5 @@ class TestLogin:
         # 4. 断言
         assert resp.status_code == case_info['validate']['status_code']
         if 'check_json' in case_info['validate']:
-            for key, expected_value in case_info['validate']['check_json']:
+            for key, expected_value in case_info['validate']['check_json'].items():
                 assert resp.json()[key] == expected_value
