@@ -21,7 +21,8 @@ login_cases:
     feature: 用户认证
     story: 用户登录
     title: 使用正确信息登录
-    description: 使用正确的账户名密码和有效token可以成功登录
+    # 需要的话也可以用 description字段
+#    description: 使用正确的账户名密码和有效token可以成功登录
     request:
       method: post
       url: /login
@@ -29,20 +30,19 @@ login_cases:
         Accept: application/json,text/javascript,/;q=0.01
         X-Requested-With: XMLHttpRequest
       json:
-        username: 13924248888
+        username: '13924248888'
         password: zsbgw123
         csrf_token: '${csrf_token}'
         backurl: 'https://m1.apifoxmock.com/m1/7035626-6755555-default/phpwind/start'
+
     validate:
       status_code: 200
       check_json:
         message: 登录成功
-
   - test_id: login_002
     feature: 用户认证
     story: 用户登录
-    title: 使用正确账户和错误密码登录
-    description: 使用正确的账户名和错误密码和有效token登陆失败
+    title: 使用未注册账户登录
     request:
       method: post
       url: /login
@@ -50,7 +50,107 @@ login_cases:
         Accept: application/json,text/javascript,/;q=0.01
         X-Requested-With: XMLHttpRequest
       json:
-        username: 13924248888
+        username: '13924248889'
+        password: zsbgw321
+        csrf_token: '${csrf_token}'
+        backurl: 'https://m1.apifoxmock.com/m1/7035626-6755555-default/phpwind/start'
+    validate:
+      status_code: 404
+      check_json:
+        message: 账户未注册
+
+  - test_id: login_003
+    feature: 用户认证
+    story: 用户登录
+    title: 账户有字母/特殊符号
+    request:
+      method: post
+      url: /login
+      headers:
+        Accept: application/json,text/javascript,/;q=0.01
+        X-Requested-With: XMLHttpRequest
+      json:
+        username: '1392424888a'
+        password: zsbgw321
+        csrf_token: '${csrf_token}'
+        backurl: 'https://m1.apifoxmock.com/m1/7035626-6755555-default/phpwind/start'
+    validate:
+      status_code: 400
+      check_json:
+        message: 账户格式错误
+
+  - test_id: login_004
+    feature: 用户认证
+    story: 用户登录
+    title: 使用10位数手机号登录
+    request:
+      method: post
+      url: /login
+      headers:
+        Accept: application/json,text/javascript,/;q=0.01
+        X-Requested-With: XMLHttpRequest
+      json:
+        username: '1392424888'
+        password: zsbgw321
+        csrf_token: '${csrf_token}'
+        backurl: 'https://m1.apifoxmock.com/m1/7035626-6755555-default/phpwind/start'
+    validate:
+      status_code: 404
+      check_json:
+        message: 账户未注册
+
+  - test_id: login_005
+    feature: 用户认证
+    story: 用户登录
+    title: 使用12位数手机号登录
+    request:
+      method: post
+      url: /login
+      headers:
+        Accept: application/json,text/javascript,/;q=0.01
+        X-Requested-With: XMLHttpRequest
+      json:
+        username: '139242488889'
+        password: zsbgw321
+        csrf_token: '${csrf_token}'
+        backurl: 'https://m1.apifoxmock.com/m1/7035626-6755555-default/phpwind/start'
+    validate:
+      status_code: 404
+      check_json:
+        message: 账户未注册
+
+  - test_id: login_006
+    feature: 用户认证
+    story: 用户登录
+    title: 手机号为空
+    request:
+      method: post
+      url: /login
+      headers:
+        Accept: application/json,text/javascript,/;q=0.01
+        X-Requested-With: XMLHttpRequest
+      json:
+        username: ''
+        password: zsbgw321
+        csrf_token: '${csrf_token}'
+        backurl: 'https://m1.apifoxmock.com/m1/7035626-6755555-default/phpwind/start'
+    validate:
+      status_code: 400
+      check_json:
+        message: 密码和账户不能为空
+
+  - test_id: login_007
+    feature: 用户认证
+    story: 用户登录
+    title: 使用正确账户和错误密码登录
+    request:
+      method: post
+      url: /login
+      headers:
+        Accept: application/json,text/javascript,/;q=0.01
+        X-Requested-With: XMLHttpRequest
+      json:
+        username: '13924248888'
         password: zsbgw321
         csrf_token: '${csrf_token}'
         backurl: 'https://m1.apifoxmock.com/m1/7035626-6755555-default/phpwind/start'
@@ -58,3 +158,46 @@ login_cases:
       status_code: 401
       check_json:
         message: 密码错误
+
+  - test_id: login_008
+    feature: 用户认证
+    story: 用户登录
+    title: 登陆失败（密码为空）
+    request:
+      method: post
+      url: /login
+      headers:
+        Accept: application/json,text/javascript,/;q=0.01
+        X-Requested-With: XMLHttpRequest
+      json:
+        username: '13924248888'
+        password: ''
+        csrf_token: '${csrf_token}'
+        backurl: 'https://m1.apifoxmock.com/m1/7035626-6755555-default/phpwind/start'
+    validate:
+      status_code: 400
+      check_json:
+        message: 密码和账户不能为空
+
+  - test_id: login_009
+    feature: 用户认证
+    story: 用户登录
+    title: 登录失败（无效token）
+    request:
+      method: post
+      url: /login
+      headers:
+        Accept: application/json,text/javascript,/;q=0.01
+        X-Requested-With: XMLHttpRequest
+      json:
+        username: '13924248888'
+        password: zsbgw123
+        csrf_token: 'csrf_token'
+        backurl: 'https://m1.apifoxmock.com/m1/7035626-6755555-default/phpwind/start'
+    validate:
+      status_code: 401
+      check_json:
+        message: token无效或过期
+
+  # 还可以加入多参、少参、无参数、错参等，以上部分其实已经包含了
+  # 根据具体的设计，预期也有不同，所以这里不列举了
