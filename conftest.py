@@ -39,3 +39,12 @@ def csrf_token(api_client):
         print('无法提取到csrf_token')
 
     return token
+
+# 解决ids参数在控制台不正常显示的问题
+def pytest_collection_modifyitems(items):
+    """
+    测试用例收集完成时，将收集到的用例名name和用例标识nodeid的中文信息正常显示在控制台上
+    """
+    for item in items:
+        item.name = item.name.encode("utf-8").decode("unicode_escape")
+        item._nodeid = item.nodeid.encode("utf-8").decode("unicode_escape")

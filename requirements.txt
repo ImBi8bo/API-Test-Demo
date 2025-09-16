@@ -2,3 +2,5 @@ requests
 pytest
 pyyaml
 jsonpath
+pytest-result-log
+allure-pytest

@@ -4,6 +4,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-#report/
-#temps/
-#pytest.log
+report/
+temps/
+pytest.log
