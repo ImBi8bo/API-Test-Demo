@@ -1,0 +1,118 @@
+{
+	"info": {
+		"_postman_id": "33d6695c-d8b9-439a-93d8-5d90020a9969",
+		"name": "TPshop参数化测试导出",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47711145",
+		"_collection_link": "https://liboyi824-4372233.postman.co/workspace/boyi-li's-Workspace~9336f4d3-c6d2-458b-837c-e9b355bc30de/collection/47711145-33d6695c-d8b9-439a-93d8-5d90020a9969?action=share&source=collection_link&creator=47711145"
+	},
+	"item": [
+		{
+			"name": "登录接口",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// 推荐：使用 .then() 和 .catch() 语法\r",
+							"pm.sendRequest({\r",
+							"    url: \"https://hmshop-test.itheima.net/index.php?m=Home&c=User&a=verify\",\r",
+							"    method: \"GET\"\r",
+							"}).then(response => {\r",
+							"    // console.log(response.json());\r",
+							"}).catch(err => {\r",
+							"    console.error(err);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 断言响应状态码\r",
+							"pm.test(\"状态响应码200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"}); \r",
+							"\r",
+							"// 断言响应信息\r",
+							"pm.test(\"响应信息\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    console.log(pm.iterationData.get(\"msg\"));\r",
+							"    pm.expect(jsonData.msg).to.eql(pm.iterationData.get(\"expect\"));\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{tp_cookies}}",
+						"description": "从验证码接口返回的cookie信息中提取",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "{{username}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "text"
+						},
+						{
+							"key": "verify_code",
+							"value": "{{verify}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://hmshop-test.itheima.net/index.php?m=Home&c=User&a=do_login",
+					"protocol": "https",
+					"host": [
+						"hmshop-test",
+						"itheima",
+						"net"
+					],
+					"path": [
+						"index.php"
+					],
+					"query": [
+						{
+							"key": "m",
+							"value": "Home"
+						},
+						{
+							"key": "c",
+							"value": "User"
+						},
+						{
+							"key": "a",
+							"value": "do_login"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
